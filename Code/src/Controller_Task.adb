@@ -25,7 +25,7 @@ package body Controller_Task is
             Put_Line ("[CTRL] Rotation done, control released.");
          end if;
 
-         delay 0.02;
+         delay 0.005;
       end loop;
    end Controller;
 

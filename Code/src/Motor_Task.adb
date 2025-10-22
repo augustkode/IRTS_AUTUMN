@@ -15,9 +15,7 @@ package body Motor_Task is
                Drive (Stop);
                Put_Line ("[MOTOR] STOP! Obstacle detected.");
             else
-               -- Hindringen er borte, controlleren er ferdig
-               -- Gi et lite pusterom før bilen starter igjen
-               delay (0.1);
+
                Drive (Forward, (3000, 3000, 3000, 3000));
                Put_Line ("[MOTOR] Driving forward...");
             end if;

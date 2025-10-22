@@ -29,7 +29,7 @@ package body Sensor_Task is
          end if;
 
 
-         delay 0.1;
+         delay 0.015;
       end loop;
    end Sensor;
 end Sensor_Task;
