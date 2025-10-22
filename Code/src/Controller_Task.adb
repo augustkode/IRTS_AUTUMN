@@ -1,32 +1,48 @@
-with Shared_Data;          use Shared_Data;
-with MicroBit.MotorDriver; use MicroBit.MotorDriver;
-with MicroBit.Console;     use MicroBit.Console;
-with HAL;                  use HAL;
+with Ada.Real_Time;           use Ada.Real_Time;
+with MicroBit.MotorDriver;    use MicroBit.MotorDriver;
+with MicroBit.Console;        use MicroBit.Console;
+with Shared_Data;             use Shared_Data;
+with HAL;                     use HAL;
 
 package body Controller_Task is
 
-   task body Controller is
-      Rotating : Boolean := False;
+   -- WCET-måling for controller
+   procedure Measure_C is
+      Start, Finish : Time;
+      Worst         : Time_Span := To_Time_Span (0.0);
+      Dummy         : Boolean;
    begin
-      Put_Line ("[CTRL] Controller started.");
+      for I in 1 .. 500 loop
+         Start := Clock;
 
-      loop
-         -- Start rotasjon bare hvis hindring oppdages og controlleren ikke allerede roterer
+         -- === kjernearbeid som controller utfører ===
          if Collision_State.Should_Stop and not Collision_State.Control_Active then
-            Put_Line ("[CTRL] Obstacle ahead → taking control & yaw left...");
             Collision_State.Set_Control (True);
             Drive (Yaw_Left, (UInt12(3000), UInt12(3000), UInt12(3000), UInt12(3000)));
-
-            -- kort rotasjon (juster varighet etter behov)
-            delay (0.05);
-
             Drive (Stop);
             Collision_State.Set_Control (False);
-            Put_Line ("[CTRL] Rotation done, control released.");
+         else
+            -- minimal lesesti (unngå ubrukte-resultat-advarsel)
+            Dummy := Collision_State.Control_Active;
+         end if;
+         -- ===========================================
+
+         Finish := Clock;
+
+         if Finish - Start > Worst then
+            Worst := Finish - Start;
          end if;
 
-         delay 0.02;
+         delay 0.01;  -- pusterom mellom målinger
       end loop;
+
+      Put_Line ("Controller C = " &
+                Duration'Image (To_Duration (Worst) * 1000.0) & " ms");
+   end Measure_C;
+
+   task body Controller is
+   begin
+      null;  -- hold inaktiv mens du måler
    end Controller;
 
 end Controller_Task;
