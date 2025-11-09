@@ -2,7 +2,7 @@ with System; use System;
 
 package Shared_Data is
    protected Collision_State
-     with Priority => Priority'Last
+     with Priority => Priority'Last - 1 -- ceiling priority
    is
       -- Sensor -> Controller/Motor
       procedure Set_Stop (Value : Boolean);

@@ -6,7 +6,7 @@ with MicroBit.Console; use MicroBit.Console;
 
 procedure Main is
 begin
-   Put_Line ("[MAIN] System initialized — starting tasks...");
+   --Put_Line ("[MAIN] System initialized - starting tasks...");
 
    loop
       delay 1.0;
