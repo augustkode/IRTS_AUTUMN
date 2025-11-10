@@ -26,16 +26,6 @@ package body Motor_Task is
             end if;
          end if;
 
-         Finish := Clock;
-         Exec_Time := To_Duration (Finish - Start);
-         Counter := Counter + 1;
-         if Counter mod 10 = 0 then
-            Put_Line
-              ("[MOTOR] Computation time: "
-               & Duration'Image (Exec_Time)
-               & " s");
-         end if;
-
          Next := Next + Period;
          delay until Next;
       end loop;

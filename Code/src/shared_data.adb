@@ -1,3 +1,5 @@
+with Shared_Data;
+
 package body Shared_Data is
 
    protected body Collision_State is
@@ -21,6 +23,16 @@ package body Shared_Data is
       begin
          return Controller_Owns;
       end Control_Active;
+
+      procedure Set_State (State : State_Type) is
+      begin
+         Current_State := State;
+      end Set_State;
+
+      function Get_State return State_Type is
+      begin
+         return Current_State;
+      end Get_State;
 
    end Collision_State;
 

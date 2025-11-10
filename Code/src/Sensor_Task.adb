@@ -9,7 +9,7 @@ with Ada.Exceptions;       use Ada.Exceptions;
 
 package body Sensor_Task is
    task body Sensor is
-      Period        : constant Time_Span := Milliseconds (150);
+      Period        : constant Time_Span := Milliseconds (80);
       Next          : Time := Clock;
       Start, Finish : Time;
 
@@ -24,13 +24,15 @@ package body Sensor_Task is
          Distance_L := SensorL.Read;
          Distance_R := SensorR.Read;
 
-         if Distance_L < Threshold or else Distance_R < Threshold then
+         if Distance_L < Threshold and Distance_L < Distance_R then
             Collision_State.Set_Stop (True);
+            Collision_State.Set_State (turn_right);
+         elsif Distance_R < Threshold and Distance_R < Distance_L then
+            Collision_State.Set_Stop (True);
+            Collision_State.Set_State (turn_left);
          else
             Collision_State.Set_Stop (False);
          end if;
-
-
          Next := Next + Period;
          delay until Next;
       end loop;
