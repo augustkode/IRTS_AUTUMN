@@ -1,7 +1,6 @@
 with Sensor_Task;
 with Motor_Task;
 with Controller_Task;
-with Shared_Data;
 with MicroBit.Console; use MicroBit.Console;
 
 procedure Main is

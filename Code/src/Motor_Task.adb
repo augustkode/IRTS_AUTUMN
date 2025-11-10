@@ -1,4 +1,4 @@
-with Shared_Data;          use Shared_Data;
+with Shared_Control_Data;  use Shared_Control_Data;
 with MicroBit.MotorDriver; use MicroBit.MotorDriver;
 with MicroBit.Console;     use MicroBit.Console;
 with MicroBit;             use MicroBit;
@@ -16,15 +16,22 @@ package body Motor_Task is
       Counter       : Integer := 0;
    begin
       loop
-         Start := Clock;
+         case Control_Data.Get_State is
+            when turn_left  =>
+               Drive (Yaw_Left, (4000, 4000, 4000, 4000));
 
-         if not Collision_State.Control_Active then
-            if Collision_State.Should_Stop then
-               Drive (Stop);
-            else
+            when turn_right =>
+               Drive (Yaw_Right, (4000, 4000, 4000, 4000));
+
+            when forward    =>
                Drive (Forward, (4000, 4000, 4000, 4000));
-            end if;
-         end if;
+
+            when Stop       =>
+               Drive (Stop);
+
+            when others     =>
+               raise Constraint_Error with "Unknown State_Type value";
+         end case;
 
          Next := Next + Period;
          delay until Next;
